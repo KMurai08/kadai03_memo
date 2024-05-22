@@ -11,7 +11,7 @@
 
 <body class="bg-slate-950">
     <header class="w-screen h-20 flex  justify-center">
-        <h1 class="flex items-center text-xl">かえってくる人形</h1>
+        <h1 class="hidden py-4 flex items-center text-3xl">かえってくる人形</h1>
     </header>
     <main class="flex">
         <div id="left_area" class="w-2/3 h-screen">
@@ -20,8 +20,8 @@
 
         <div id="right_area" class="w-1/3 h-screen p-10 flex flex-col items-center">
             <div id="text_area" class="">
-                <div id="kakusu">
-                    <div id="text_01">
+                <div id="kakusu" class="hidden">
+                    <div id="text_01" class="hidden">
                         <p>我が家には、捨てても帰ってくる曰く付きの人形がある。</p>
                         <p>あっ、やっぱり……昨日きちんとゴミ捨て場に置いてきたはずなのに、今日もある。</p>
                         <p>…………。</p>
@@ -29,7 +29,14 @@
                         <p> そうだな……。</p>
                         <br><br>
                     </div>
-                    <input id="place" type="場所を入力">
+                    <div id="text_02" class="hidden">
+                        <p>さてさて、今日はどうだろうか。</p>
+                        <p>あ……。やっぱり今日もある。</p>
+                        <h3 class="text-2xl"></h3>
+                        <p>に捨てたはずなのに</p>
+                        <p>もっと遠くに捨ててみよう。そうだな……。</p>
+                    </div>
+                    <input id="place" type="text">
 
                     <button id="save" class="px-2 text-red-400 bg-zinc-300 hover:bg-fuchsia-600">へ、捨てに行く</button>
                 </div>
@@ -46,6 +53,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script>
+        $("h1").fadeIn(1000);
 
         // ページ訪問数カウント
         // getItemメソッドでlocalStorageからデータを取得
@@ -54,6 +62,7 @@
         if (n === null) {
             //データが何もない場合「1」を代入
             n = 1;
+       
         } else {
             //データがある場合「1」をプラス
             n++;
@@ -63,31 +72,42 @@
         //コンソールで値を表示
         console.log(n);
 
+
         // リセットボタン
         $('#reset').on('click', function () {
             localStorage.removeItem('count');
         });
 
         // 捨て場所を入力したものを保存する配列
-
-        const placeHistory = [];
+        const list = [];
 
         // 捨てに行くをクリックした時の処理
 
         $('#save').on('click', function () {
+
+            // inputの中身を取得してBasyoに保存
             const Basyo = $("#place").val();
             localStorage.setItem("waste", Basyo)
-            console.log(Basyo);
+            // リストに場所の履歴を保存
+            list.push(Basyo);
+            // リストの配列をローカルストレージに保存
+            const serializedArray = JSON.stringify(list);
+            localStorage.setItem('wasteList', serializedArray);
+
             $('#text_after').fadeIn(2500);
-            $('#kakusu').fadeOut(1000);
+            $('#kakusu,#ningyou').fadeOut(1000);
         });
 
-
-
-
-
-
-
+        if (n === 1){
+            // 1日目の文章を表示
+            $('#kakusu,#text_01').fadeIn(1000);  
+        }else{
+            // 2日目以降の文章を表示
+            $('#kakusu,#text_02').fadeIn(1000);
+            const serializedArray = localStorage.getItem('wasteList');
+            const list = JSON.parse(serializedArray);
+            $('h3').text(list);
+        }
 
 
 
