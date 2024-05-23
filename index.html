@@ -6,24 +6,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/main.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Document</title>
+    <title>かえってくる人形</title>
 </head>
 
-<body class="">
-    <header class="atama">
-        <p>こんにちは</p>
-        <h1 id="test">テスト</h1>
+<body class="bg-slate-950">
+    <header class="w-screen h-20 flex  justify-center">
+        <h1 class="hidden py-4 flex items-center text-3xl">かえってくる人形</h1>
     </header>
-    <main>
+    <main class="flex">
         <div id="left_area" class="w-2/3 h-screen">
-            <a href="">aaa</a>
+            <img id="ningyou" src="./image/ningyou.png" alt="" class="">
         </div>
+        <div id="left_area_after" class="hidden w-2/3 h-screen"></div>
 
-        <div class="w-1/3 h-screen">
+        <div id="right_area" class="w-1/3 h-screen p-10 flex flex-col items-center">
+
+            <div id="text_area" class="">
+                <div id="kakusu" class="hidden">
+                    <div id="text_01" class="hidden">
+                        <p>我が家には、捨てても帰ってくる曰く付きの人形がある。</p>
+                        <p>あっ、やっぱり……昨日きちんとゴミ捨て場に置いてきたはずなのに、今日もある。</p>
+                        <p>…………。</p>
+                        <p>試しに違う場所に捨ててみようか。</p>
+                        <p> そうだな……。</p>
+                        <br><br>
+                    </div>
+                    <div id="text_02" class="hidden">
+                        <p>さてさて、今日はどうだろうか。</p>
+                        <p>あ……。やっぱり今日もある。</p>
+                        <h3 class="text-2xl"></h3>
+                        <p>に捨てたはずなのに</p>
+                        <p>もっと遠くに捨ててみよう。そうだな……。</p>
+                    </div>
+                    <br>
+
+                    <input id="place" type="text">
+
+                    <button id="save" class="px-2 text-red-400 bg-zinc-300 hover:bg-fuchsia-600">へ、捨てに行く</button>
+                </div>
+                <br>
+                <button id="nextButton" class="hidden bg-white text-red-600 hover:bg-fuchsia-600">よし、これで安心だな。</button>
+
+                <div id="text_03" class="hidden">
+                    <p>さて、今日は……</p>
+                    <p>あれ？　なくなってる！</p>
+                    <p>やった！　やっぱり</p>
+                    <h3 class="text-xl"></h3>
+                    <p>に捨てたのが良かったんだな。</p>
+                    <br>
+
+                    <button id="endButton"
+                        class="bg-white text-red-600 hover:bg-fuchsia-600">よかった……これでようやく本当に安心だ</button>
+
+
+                </div>
+
+                <div id="text_04" class="hidden">
+                    <p>目を開けると、朝のはずなのに真っ暗だった。それにとても窮屈で戸惑う。</p>
+                    <p>……？ ここは？</p>
+                    <p>遠くから車が近づいてくる音が聞こえる。ということは外か。</p>
+                    <p>車がすぐ側で止まり、人が降りてくるのが気配で分かった。</p>
+                    <p>ふいに、世界がぐらっと揺れた。</p>
+                    <p>『うわっ、重い。これ中身、本当に燃えるゴミか？』</p>
+                    <p>『なか、確認しますか？』</p>
+                    <p>男ふたりの声がする。</p>
+                    <p>ここで私は気づいた。もしかして、私はゴミ袋の中に……？</p>
+                    <p>驚いて、とっさに声を出そうとしたが、なぜか出ない。</p>
+                    <p>片方の男が言う。</p>
+                    <p>『いや、少し遅れてるからな。まあ、大丈夫だろう』</p>
+                    <p>私が入った袋が持ち上げられる。投入口のプレス機の音が聞こえる。</p>
+                    <br>
+                    <button id="saigoButton" class="bg-white text-red-600 hover:bg-fuchsia-600">そして私は————</button>
+
+                </div>
+            </div>
 
         </div>
 
     </main>
+    <footer class="flex justify-center">
+        <button id="returnFirst" class="hidden bg-white text-red-600">1日目に戻る</button>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script>
+        // タイトルをゆっくり表示
+        $("h1").fadeIn(1000);
+
+        // ページ訪問数カウント
+        // getItemメソッドでlocalStorageからデータを取得
+        let n = localStorage.getItem('count');
+        //データの値を判定
+        if (n === null) {
+            //データが何もない場合「1」を代入
+            n = 1;
+
+        } else {
+            //データがある場合「1」をプラス
+            n++;
+        }
+        //setItemメソッドでlocalStorageにデータを保存
+        localStorage.setItem('count', n);
+
+        // ページ更新ボタン（これで安心だボタン）
+        $('#nextButton,#endButton,#saigoButton').on('click', function () {
+            location.reload();  // ページを再読み込み
+
+        });
+
+
+
+        // 1日目に戻るボタン
+
+        $('#returnFirst').on('click', function () {
+            localStorage.removeItem('count');
+            location.reload();  // ページを再読み込み
+
+        });
+
+
+        // 捨て場所を入力したものを保存する配列
+        const list = [];
+
+        // 捨てに行くをクリックした時の処理
+
+        $('#save').on('click', function () {
+
+            // inputの中身を取得してBasyoに保存
+            const Basyo = $("#place").val();
+            localStorage.setItem("waste", Basyo)
+            // リストに場所の履歴を保存
+            list.push(Basyo);
+            // リストの配列をローカルストレージに保存
+            const serializedArray = JSON.stringify(list);
+            localStorage.setItem('wasteList', serializedArray);
+            console.log(list);
+
+            // 更新ボタン表示
+            $('#nextButton').fadeIn(2500);
+            $('#kakusu,#ningyou').fadeOut(1000);
+        });
+
+        if (n === 1) {
+            // 1日目の文章を表示
+            $('#kakusu,#text_01').fadeIn(1000);
+        } else if (1 < n && n < 4) {
+            // 2日目以降の文章を表示
+            $('#kakusu,#text_02').fadeIn(1000);
+            // 前のページで入力した捨てた場所を文章に表示
+            const serializedArray = localStorage.getItem('wasteList');
+            const list = JSON.parse(serializedArray);
+            $('h3').text(list);
+        } else if (n === 4) {
+            // 4日目の内容を表示
+            $('#ningyou').hide();
+            $('#text_03').fadeIn(1000);
+            const serializedArray = localStorage.getItem('wasteList');
+            const list = JSON.parse(serializedArray);
+            $('h3').text(list);
+        } else if (n === 5) {
+            // 5日目の内容を表示（背景消すため左画面非表示、新しい左画面追加）
+            $('#left_area').hide();
+            $('#left_area_after').show();
+            $('#text_04').fadeIn(1000);
+
+        } else {
+            // 画面を真っ暗にして最初に戻るボタンを表示
+            $('header').hide();
+            $('#left_area').hide();
+            $('#returnFirst').show();
+
+        }
+
+
+
+
+
+    </script>
+
+
 
 </body>
 
