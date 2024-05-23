@@ -17,8 +17,10 @@
         <div id="left_area" class="w-2/3 h-screen">
             <img id="ningyou" src="./image/ningyou.png" alt="" class="">
         </div>
+        <div id="left_area_after" class="hidden w-2/3 h-screen"></div>
 
         <div id="right_area" class="w-1/3 h-screen p-10 flex flex-col items-center">
+
             <div id="text_area" class="">
                 <div id="kakusu" class="hidden">
                     <div id="text_01" class="hidden">
@@ -36,23 +38,59 @@
                         <p>に捨てたはずなのに</p>
                         <p>もっと遠くに捨ててみよう。そうだな……。</p>
                     </div>
+                    <br>
+
                     <input id="place" type="text">
 
                     <button id="save" class="px-2 text-red-400 bg-zinc-300 hover:bg-fuchsia-600">へ、捨てに行く</button>
                 </div>
                 <br>
-                <br>
-                <p id="text_after" class="hidden text-l">よし、これで安心だな。</p>
-                <button id="reset" class="bg-white">リセット</button>
+                <button id="nextButton" class="hidden bg-white text-red-600 hover:bg-fuchsia-600">よし、これで安心だな。</button>
+
+                <div id="text_03" class="hidden">
+                    <p>さて、今日は……</p>
+                    <p>あれ？　なくなってる！</p>
+                    <p>やった！　やっぱり</p>
+                    <h3 class="text-xl"></h3>
+                    <p>に捨てたのが良かったんだな。</p>
+                    <br>
+
+                    <button id="endButton"
+                        class="bg-white text-red-600 hover:bg-fuchsia-600">よかった……これでようやく本当に安心だ</button>
+
+
+                </div>
+
+                <div id="text_04" class="hidden">
+                    <p>目を開けると、朝のはずなのに真っ暗だった。それにとても窮屈で戸惑う。</p>
+                    <p>……？ ここは？</p>
+                    <p>遠くから車が近づいてくる音が聞こえる。ということは外か。</p>
+                    <p>車がすぐ側で止まり、人が降りてくるのが気配で分かった。</p>
+                    <p>ふいに、世界がぐらっと揺れた。</p>
+                    <p>『うわっ、重い。これ中身、本当に燃えるゴミか？』</p>
+                    <p>『なか、確認しますか？』</p>
+                    <p>ここで私は気づいた。もしかして、私はゴミ袋の中に……？</p>
+                    <p>驚いて、とっさに声を出そうとしたが、なぜか出ない。</p>
+                    <p>男が言う。</p>
+                    <p>『いや、少し遅れてるからな。まあ、大丈夫だろう』</p>
+                    <p>私が入った袋が持ち上げられる。投入口のプレス機の音が聞こえる。</p>
+                    <br>
+                    <button id="saigoButton" class="bg-white text-red-600 hover:bg-fuchsia-600">そして私は————</button>
+
+                </div>
             </div>
 
         </div>
 
     </main>
+    <footer class="flex justify-center">
+        <button id="returnFirst" class="hidden bg-white text-red-600">1日目に戻る</button>
+    </footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script>
+        // タイトルをゆっくり表示
         $("h1").fadeIn(1000);
 
         // ページ訪問数カウント
@@ -62,21 +100,30 @@
         if (n === null) {
             //データが何もない場合「1」を代入
             n = 1;
-       
+
         } else {
             //データがある場合「1」をプラス
             n++;
         }
         //setItemメソッドでlocalStorageにデータを保存
         localStorage.setItem('count', n);
-        //コンソールで値を表示
-        console.log(n);
 
+        // ページ更新ボタン（これで安心だボタン）
+        $('#nextButton,#endButton,#saigoButton').on('click', function () {
+            location.reload();  // ページを再読み込み
 
-        // リセットボタン
-        $('#reset').on('click', function () {
-            localStorage.removeItem('count');
         });
+
+
+
+        // 1日目に戻るボタン
+
+        $('#returnFirst').on('click', function () {
+            localStorage.removeItem('count');
+            location.reload();  // ページを再読み込み
+
+        });
+
 
         // 捨て場所を入力したものを保存する配列
         const list = [];
@@ -93,21 +140,44 @@
             // リストの配列をローカルストレージに保存
             const serializedArray = JSON.stringify(list);
             localStorage.setItem('wasteList', serializedArray);
+            console.log(list);
 
-            $('#text_after').fadeIn(2500);
+            // 更新ボタン表示
+            $('#nextButton').fadeIn(2500);
             $('#kakusu,#ningyou').fadeOut(1000);
         });
 
-        if (n === 1){
+        if (n === 1) {
             // 1日目の文章を表示
-            $('#kakusu,#text_01').fadeIn(1000);  
-        }else{
+            $('#kakusu,#text_01').fadeIn(1000);
+        } else if (1 < n && n < 4) {
             // 2日目以降の文章を表示
             $('#kakusu,#text_02').fadeIn(1000);
+            // 前のページで入力した捨てた場所を文章に表示
             const serializedArray = localStorage.getItem('wasteList');
             const list = JSON.parse(serializedArray);
             $('h3').text(list);
+        } else if (n === 4) {
+            // 4日目の内容を表示
+            $('#ningyou').hide();
+            $('#text_03').fadeIn(1000);
+            const serializedArray = localStorage.getItem('wasteList');
+            const list = JSON.parse(serializedArray);
+            $('h3').text(list);
+        } else if (n === 5) {
+            // 5日目の内容を表示（背景消すため左画面非表示、新しい左画面追加）
+            $('#left_area').hide();
+            $('#left_area_after').show();
+            $('#text_04').fadeIn(1000);
+
+        } else {
+            // 画面を真っ暗にして最初に戻るボタンを表示
+            $('header').hide();
+            $('#left_area').hide();
+            $('#returnFirst').show();
+
         }
+
 
 
 
